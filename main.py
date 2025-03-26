@@ -27,3 +27,5 @@ async def hello(ctx):
 token = os.getenv("DISCORD_TOKEN")
 if token:
     bot.run(token)
+else:
+    print("error : Don't find token")
