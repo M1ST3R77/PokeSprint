@@ -9,5 +9,5 @@ if os.path.exists(env_file):
 token = os.getenv("DISCORD_TOKEN")
 
 if token:
-    bot = create_bot()
-    bot.run(token)
+  bot = create_bot()
+  bot.run(token)
