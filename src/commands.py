@@ -1,6 +1,7 @@
 from src.Class.Server import Server
 from discord.ext import commands
 from src.cmd.public.trailer import Trailer
+from src.cmd.public.profile_menu import ProfileMenu
 from src.cmd.public.set_channel import set_channel
 from src.cmd.admin.send_broadcast import send_broadcast
 
@@ -42,7 +43,8 @@ def setup_commands(bot: commands.Bot):
             await ctx.send("❌ Ce serveur n'est pas configuré pour recevoir des messages. Utilisez la commande `!setchannel <id_du_channel>`. Plus d'informations avec la commande `!help`")
             return
         view = Trailer()
-        await channel.send(embed=view.pages[0], view=view)
+        embed, file = view.pages[0]()
+        await ctx.send(embed=embed, file=file, view=view)
     
     @bot.command()
     async def setchannel(ctx: commands.Context, channel_id: int):
@@ -59,3 +61,12 @@ def setup_commands(bot: commands.Bot):
             await ctx.send("❌ Ce channel n'a pas pu être sauvegardé.")
         else:
             await ctx.send(f"✅ Channel de notification enregistré : {channel.name}")
+    
+    @bot.command()
+    async def profiles(ctx: commands.Context):
+        server = Server(ctx.guild)
+        if server.is_admin():
+            await ctx.send("❌ Ce serveur est administrateur.")
+            return
+        view = ProfileMenu(server)
+        await ctx.send("📋 **Gestion des profils**", view=view, ephemeral=True)

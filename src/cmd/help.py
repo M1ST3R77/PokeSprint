@@ -17,6 +17,11 @@ def get_help(type: str):
             value="Définit le channel de notifications pour ce serveur.",
             inline=False
         )
+        embed.add_field(
+            name="📜 `!profiles`",
+            value="Affiche la liste des utilisateurs participants aux races",
+            inline=False
+        )
     elif type == "admin":
         embed = discord.Embed(
             title="🛠️ Aide - Commandes administrateur",
