@@ -16,8 +16,9 @@ CREATE TABLE profil (
     id INT AUTO_INCREMENT PRIMARY KEY,
     discord_id BIGINT NOT NULL UNIQUE,
     username VARCHAR(100) NOT NULL,
-    server_id INT NOT NULL,
+    private_channel_id varchar(30),
+    server_id BIGINT NOT NULL,
     race_id INT DEFAULT NULL,
-    FOREIGN KEY (server_id) REFERENCES server(id) ON DELETE CASCADE,
+    FOREIGN KEY (server_id) REFERENCES server(discord_id) ON DELETE CASCADE,
     FOREIGN KEY (race_id) REFERENCES race(id) ON DELETE SET NULL
 );

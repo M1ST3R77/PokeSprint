@@ -1,11 +1,11 @@
-from discord.ext import commands
 import discord
 
 class Trailer(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
-        self.pages = [self.page1(), self.page2()]
+        self.pages = [self.page1, self.page2, self.page3]
         self.current = 0
+
     
     def page1(self):
         embed = discord.Embed(
@@ -21,20 +21,37 @@ class Trailer(discord.ui.View):
             color=discord.Color.orange()
         )
         embed.set_footer(text="Qui deviendra le meilleur dresseur ? ⭐")
-        return embed
+        return embed, None
     
     def page2(self):
-        embed = discord.Embed(color=discord.Color.green())
-        embed.set_image(url="https://cdn.discordapp.com/attachments/1354532813659181317/1371206794935930951/second_hint.PNG?ex=68224b57&is=6820f9d7&hm=01b2518065d2bf924093fa9ef3f0dfa9635c6a165040af696c30f2ec1976176d&")
-        embed.set_footer(text="Voici le deuxième indice 🕵️‍♂️")
-        return embed
+        embed = discord.Embed(title="🕵️ Deuxième indice", color=discord.Color.green())
+        embed.set_image(url="attachment://second_hint.PNG")
+        file = discord.File("data/second_hint.PNG", filename="second_hint.PNG")
+        return embed, file
+    
+    def page3(self):
+        embed = discord.Embed(
+            title="🔊 Troisième indice",
+            description="Écoutez l'audio ci-dessus",
+            color=discord.Color.blue()
+        )
+        file = discord.File("data/third_hint.ogg", filename="third_hint.ogg")
+        return embed, file
+
+    async def update_page(self, interaction: discord.Interaction):
+        embed, file = self.pages[self.current]()
+        await interaction.response.edit_message(
+            embed=embed,
+            view=self,
+            attachments=[file] if file else []
+        )
     
     @discord.ui.button(label="⬅️ Précédent", style=discord.ButtonStyle.gray)
     async def previous(self, interaction: discord.Interaction, button: discord.ui.Button):
         self.current = (self.current - 1) % len(self.pages)
-        await interaction.response.edit_message(embed=self.pages[self.current], view=self)
+        await self.update_page(interaction)
     
     @discord.ui.button(label="➡️ Suivant", style=discord.ButtonStyle.gray)
     async def next(self, interaction: discord.Interaction, button: discord.ui.Button):
         self.current = (self.current + 1) % len(self.pages)
-        await interaction.response.edit_message(embed=self.pages[self.current], view=self)
+        await self.update_page(interaction)
