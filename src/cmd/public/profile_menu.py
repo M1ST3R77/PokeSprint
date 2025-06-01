@@ -108,7 +108,7 @@ class ProfileListView(discord.ui.View):
     async def update_view(self, interaction: discord.Interaction):
         self.update_buttons()
 
-        discord_id, username = self.profiles[self.current_page]
+        discord_id, _ = self.profiles[self.current_page]
         user = interaction.client.get_user(discord_id) or await interaction.client.fetch_user(discord_id)
         avatar_url = user.avatar.url if user and user.avatar else user.default_avatar.url
 
@@ -122,22 +122,51 @@ class ProfileListView(discord.ui.View):
 
         username, private_channel_id = profile
 
+        races_terminees = self.server.database.query("SELECT r.name, rr.position FROM race_ranking rr JOIN race r ON rr.race_id = r.id JOIN profil p ON rr.player_name = p.username JOIN profil_race pr ON p.id = pr.profil_id AND r.id = pr.race_id WHERE p.discord_id = %s AND r.server_id = %s AND r.status = 'terminé'", (discord_id, self.server.guild_id), fetchall=True)
+
+        races_en_cours = self.server.database.query("SELECT r.name FROM race r JOIN profil_race pr ON r.id = pr.race_id JOIN profil p ON p.id = pr.profil_id WHERE p.discord_id = %s AND r.server_id = %s AND r.status = 'en_cours'", (discord_id, self.server.guild_id), fetchall=True)
+
+        nb_victoires = sum(1 for _, pos in races_terminees if pos == 1)
+
+        if nb_victoires >= 4:
+            color = discord.Color.green()
+        elif nb_victoires == 3:
+            color = discord.Color.gold()
+        elif nb_victoires == 2:
+            color = discord.Color.light_grey()
+        elif nb_victoires == 1:
+            color = discord.Color.from_rgb(205, 127, 50)
+        else:
+            color = discord.Color.dark_gray()
+
         embed = discord.Embed(
             title=f"🎖️ Carte de Dresseur : {username} ({self.current_page + 1}/{len(self.profiles)})",
-            color=discord.Color.dark_gray()
+            color=color
         )
         embed.set_thumbnail(url=avatar_url)
+
+        if nb_victoires > 0:
+            embed.description = f"{'⭐' * nb_victoires}"
+
         embed.add_field(name="Nom", value=username, inline=False)
         embed.add_field(name="Salon privé", value=f"<#{private_channel_id}>" if private_channel_id else "Aucun", inline=False)
-        embed.set_footer(text=f"ID: {discord_id}")
+        
+        if races_terminees:
+            terminees = "\n".join(f"`{race}` - 🏁 {pos}ᵉ" for race, pos in races_terminees)
+            embed.add_field(name="Races terminées", value=terminees, inline=False)
 
+        if races_en_cours:
+            cours = "\n".join(f"`{race[0]}`" for race in races_en_cours)
+            embed.add_field(name="Races en cours", value=cours, inline=False)
+
+        embed.set_footer(text=f"ID: {discord_id}")
         await interaction.response.edit_message(embed=embed, view=self)
     
     async def get_current_embed(self, client: discord.Client) -> discord.Embed:
         if not self.profiles:
             return discord.Embed(title="Aucun profil", description="Aucun profil enregistré.", color=discord.Color.red())
         
-        discord_id, username = self.profiles[self.current_page]
+        discord_id, _ = self.profiles[self.current_page]
         user = client.get_user(discord_id) or await client.fetch_user(discord_id)
         avatar_url = user.avatar.url if user and user.avatar else user.default_avatar.url
 
@@ -150,13 +179,43 @@ class ProfileListView(discord.ui.View):
 
         username, private_channel_id = profile
 
+        races_terminees = self.server.database.query("SELECT r.name, rr.position FROM race_ranking rr JOIN race r ON rr.race_id = r.id JOIN profil p ON rr.player_name = p.username JOIN profil_race pr ON p.id = pr.profil_id AND r.id = pr.race_id WHERE p.discord_id = %s AND r.server_id = %s AND r.status = 'terminé'", (discord_id, self.server.guild_id), fetchall=True)
+
+        races_en_cours = self.server.database.query("SELECT r.name FROM race r JOIN profil_race pr ON r.id = pr.race_id JOIN profil p ON p.id = pr.profil_id WHERE p.discord_id = %s AND r.server_id = %s AND r.status = 'en_cours'", (discord_id, self.server.guild_id), fetchall=True)
+        
+        nb_victoires = sum(1 for _, pos in races_terminees if pos == 1)
+
+        if nb_victoires >= 4:
+            color = discord.Color.green()
+        elif nb_victoires == 3:
+            color = discord.Color.gold()
+        elif nb_victoires == 2:
+            color = discord.Color.light_grey()
+        elif nb_victoires == 1:
+            color = discord.Color.from_rgb(205, 127, 50)
+        else:
+            color = discord.Color.dark_gray()
+
         embed = discord.Embed(
             title=f"🎖️ Carte de Dresseur : {username} ({self.current_page + 1}/{len(self.profiles)})",
-            color=discord.Color.dark_gray()
+            color=color
         )
         embed.set_thumbnail(url=avatar_url)
+
+        if nb_victoires > 0:
+            embed.description = f"{'⭐' * nb_victoires}"
+
         embed.add_field(name="Nom", value=username, inline=False)
         embed.add_field(name="Salon privé", value=f"<#{private_channel_id}>" if private_channel_id else "Aucun", inline=False)
+        
+        if races_terminees:
+            terminees = "\n".join(f"`{race}` - 🏁 {pos}ᵉ" for race, pos in races_terminees)
+            embed.add_field(name="Races terminées", value=terminees, inline=False)
+
+        if races_en_cours:
+            cours = "\n".join(f"`{race[0]}`" for race in races_en_cours)
+            embed.add_field(name="Races en cours", value=cours, inline=False)
+
         embed.set_footer(text=f"ID: {discord_id}")
         return embed
 

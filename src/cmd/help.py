@@ -22,6 +22,36 @@ def get_help(type: str):
             value="Affiche la liste des utilisateurs participants aux races",
             inline=False
         )
+        embed.add_field(
+            name="🏁 `!races`",
+            value="Affiche la liste des races",
+            inline=False
+        )
+        embed.add_field(
+            name="🚀 `!run <nom_de_la_race> <joueur1> <joueur2>...`",
+            value="Lance une race en pause avec les joueurs donnés. Une seule race peut être en cours à la fois.",
+            inline=False
+        )
+        embed.add_field(
+            name="⏸️ `!pause <nom_de_la_race>`",
+            value="Met en pause une race en cours.",
+            inline=False
+        )
+        embed.add_field(
+            name="🏁 `!end <nom_de_la_race>`",
+            value="Termine une race (en cours ou en pause).",
+            inline=False
+        )
+        embed.add_field(
+            name="ℹ️ `!info`",
+            value="Affiche ta progression dans la race en cours : nom, jeu, objectif actuel et prochain. (Utilisable uniquement dans ton salon privé)",
+            inline=False
+        )
+        embed.add_field(
+            name="⏭️ `!next`",
+            value="Passe à l’objectif suivant dans la race. (Utilisable uniquement dans ton salon privé)",
+            inline=False
+        )
     elif type == "admin":
         embed = discord.Embed(
             title="🛠️ Aide - Commandes administrateur",
