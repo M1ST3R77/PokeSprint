@@ -2,7 +2,11 @@ from src.Class.Server import Server
 from discord.ext import commands
 from src.cmd.public.trailer import Trailer
 from src.cmd.public.profile_menu import ProfileMenu
+from src.cmd.public.races_menu import RaceView
 from src.cmd.public.set_channel import set_channel
+from src.cmd.public.run_race import run_race
+from src.cmd.public.pause_race import pause_race
+from src.cmd.public.end_race import end_race
 from src.cmd.admin.send_broadcast import send_broadcast
 
 def setup_admin_commands(bot: commands.Bot):
@@ -70,3 +74,36 @@ def setup_commands(bot: commands.Bot):
             return
         view = ProfileMenu(server)
         await ctx.send("📋 **Gestion des profils**", view=view, ephemeral=True)
+    
+    @bot.command()
+    async def races(ctx: commands.Context):
+        server = Server(ctx.guild)
+        if server.is_admin():
+            await ctx.send("❌ Ce serveur est administrateur.")
+            return
+        view = RaceView(server)
+        await ctx.send(embed=view.get_embed(), view=view)
+    
+    @bot.command()
+    async def run(ctx: commands.Context, race_name: str, *players: str):
+        server = Server(ctx.guild)
+        if server.is_admin():
+            await ctx.send("❌ Ce serveur est administrateur.")
+            return
+        await run_race(ctx, server, race_name, *players)
+    
+    @bot.command()
+    async def pause(ctx: commands.Context, race_name: str):
+        server = Server(ctx.guild)
+        if server.is_admin():
+            await ctx.send("❌ Ce serveur est administrateur.")
+            return
+        await pause_race(ctx, server, race_name)
+    
+    @bot.command()
+    async def end(ctx: commands.Context, race_name: str):
+        server = Server(ctx.guild)
+        if server.is_admin():
+            await ctx.send("❌ Ce serveur est administrateur.")
+            return
+        await end_race(ctx, server, race_name)
