@@ -1,0 +1,28 @@
+services:
+  mariadb:
+    image: mariadb:latest
+    container_name: mariadb
+    env_file: ../.env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MARIADB_DATABASE}
+    ports:
+      - "${MARIADB_PORT}:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: phpmyadmin
+    env_file: ../.env
+    depends_on:
+      - mariadb
+    environment:
+      PMA_HOST: ${PMA_HOST}
+      PMA_PORT: ${MARIADB_PORT}
+    ports:
+      - "${PORT}:80"
+
+volumes:
+  mariadb_data:
