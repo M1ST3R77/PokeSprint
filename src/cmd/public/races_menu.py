@@ -110,7 +110,7 @@ class RaceView(discord.ui.View):
             del self.races[self.current_index]
             self.current_index = max(0, self.current_index - 1)
             await interaction.response.send_message(
-                f"🗑️ La course **{race_name}** a bien été supprimée.", ephemeral=True
+                f"🗑️ La race **{race_name}** a bien été supprimée.", ephemeral=True
             )
 
         view = ConfirmationView(on_confirm=confirm_deletion)

@@ -42,6 +42,16 @@ def get_help(type: str):
             value="Termine une race (en cours ou en pause).",
             inline=False
         )
+        embed.add_field(
+            name="ℹ️ `!info`",
+            value="Affiche ta progression dans la race en cours : nom, jeu, objectif actuel et prochain. (Utilisable uniquement dans ton salon privé)",
+            inline=False
+        )
+        embed.add_field(
+            name="⏭️ `!next`",
+            value="Passe à l’objectif suivant dans la race. (Utilisable uniquement dans ton salon privé)",
+            inline=False
+        )
     elif type == "admin":
         embed = discord.Embed(
             title="🛠️ Aide - Commandes administrateur",

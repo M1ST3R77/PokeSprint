@@ -37,6 +37,7 @@ CREATE TABLE race_ranking (
     race_id INT NOT NULL,
     player_name TEXT NOT NULL,
     position INTEGER NOT NULL,
+    milestone_position INT DEFAULT 0,
     FOREIGN KEY (race_id) REFERENCES race(id) ON DELETE CASCADE
 );
 

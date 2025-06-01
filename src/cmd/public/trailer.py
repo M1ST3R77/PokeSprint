@@ -3,7 +3,7 @@ import discord
 class Trailer(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
-        self.pages = [self.page1, self.page2, self.page3]
+        self.pages = [self.page1, self.page2, self.page3, self.page4]
         self.current = 0
 
     
@@ -37,6 +37,15 @@ class Trailer(discord.ui.View):
         )
         file = discord.File("data/third_hint.ogg", filename="third_hint.ogg")
         return embed, file
+    
+    def page4(self):
+        embed = discord.Embed(
+            title="🧩 Quatrième indice",
+            description="📱🃏📰🔴⚪",
+            color=discord.Color.purple()
+        )
+        embed.set_footer(text="A quoi cela fait référence ?")
+        return embed, None
 
     async def update_page(self, interaction: discord.Interaction):
         embed, file = self.pages[self.current]()
