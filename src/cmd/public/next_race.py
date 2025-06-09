@@ -27,8 +27,8 @@ async def lancer_roulette(channel_notif: GuildChannel | Thread | PrivateChannel 
     dist_from_first = max(first_pos - new_milestone_position, 0)
     max_dist = max(first_pos, 1)
     progress_ratio = min(dist_from_first / max_dist, 1.0)
-    base_bonus_chance = 0.13
-    max_bonus_chance = 0.30
+    base_bonus_chance = 0.20
+    max_bonus_chance = 0.40
     if dist_from_first == 0:
         bonus_chance = base_bonus_chance
     else:
