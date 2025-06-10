@@ -36,7 +36,8 @@ async def lancer_roulette(channel_notif: GuildChannel | Thread | PrivateChannel 
 
     while True:
         roulette_type = "malus"
-        if random.random() < bonus_chance:
+        valeur_aleatoire = random.randint(0, 10) / 10
+        if valeur_aleatoire < bonus_chance:
             roulette_type = "bonus"
 
         if roulette_type == "malus":
@@ -64,7 +65,8 @@ async def lancer_roulette(channel_notif: GuildChannel | Thread | PrivateChannel 
 
         await animation_msg.edit(content=f"🎉 La roulette s'arrête sur : **{choix}** !")
 
-        if relance_count <= 3 and random.random() < relance_chance:
+        valeur_aleatoire = random.randint(0, 10) / 10
+        if relance_count <= 3 and valeur_aleatoire < relance_chance:
             relance_count += 1
             await channel_notif.send("🔄 La roulette relance !")
             await asyncio.sleep(1)
