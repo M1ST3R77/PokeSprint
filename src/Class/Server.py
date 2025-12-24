@@ -1,9 +1,7 @@
-from dotenv import load_dotenv
 from src.Class.Database import Database
 import os
 import discord
 
-load_dotenv("../../")
 ADMIN_SERVER_ID = int(os.getenv("DISCORD_SERVER_ADMIN_ID"))
 
 class Server:
